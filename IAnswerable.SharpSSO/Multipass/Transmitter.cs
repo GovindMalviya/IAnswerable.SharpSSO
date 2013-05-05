@@ -9,12 +9,12 @@ using IAnswerable.SharpSSO.Security;
 
 namespace IAnswerable.SharpSSO.Multipass
 {
-    public class Transmitter<T> where T : class, new()
+    public class Transmitter<T> where T : class, new() 
     {
-        JavaScriptSerializer _jsserializer = new JavaScriptSerializer();
-        Encryption encryption = new Encryption();
 
-        string _destinationUrl;
+        IMultipassBuilder _multipassbuilder;
+
+
         T _data;
         string _apikey;
         string _sitekey;
@@ -58,81 +58,51 @@ namespace IAnswerable.SharpSSO.Multipass
         }
 
 
-        public Transmitter(string destinationUrl, T data)
+        public Transmitter(T data)
         {
-            if (destinationUrl.IsNotNullOrEmptyOrWhiteSpace())
+            _multipassbuilder = new MultipassBuilder();
+
+            if (data.IsNull())
             {
-                throw new ArgumentNullException("Argument is null or empty or whitespace.", "destinationUrl");
+                throw new ArgumentNullException("Argument cannot be null", "destinationUrl");
             }
 
-            if (Uri.IsWellFormedUriString(destinationUrl, UriKind.RelativeOrAbsolute))
-            {
-                throw new ArgumentException("Url not valid", "destinationUrl");
-            }
-
-            this._destinationUrl = destinationUrl;
             this._data = data;
         }
 
-        public string CreateMultipass(out string signature)
+        public IMultipass CreateMultipass()
         {
-            if (_apikey.IsNotNullOrEmptyOrWhiteSpace())
+            IMultipass multipass = new Multipass();
+
+            if (string.IsNullOrEmpty(_apikey))
             {
                 throw new ArgumentException("Encryption Key cannot be empty.", "EncryptionKey");
             }
 
-            if (_sitekey.IsNotNullOrEmptyOrWhiteSpace())
+            if (string.IsNullOrEmpty(_sitekey))
             {
                 throw new ArgumentException("Site Key cannot be empty.", "SiteKey");
             }
 
-            if (_initVector.IsNotNullOrEmptyOrWhiteSpace())
+            if (string.IsNullOrEmpty(_initVector))
             {
                 throw new ArgumentException("Init Vector cannot be empty.", "InitVector");
             }
 
 
             //serialize object to json string
-            string strdata = _jsserializer.Serialize(_data);
+            string strdata = _multipassbuilder.Serialize(_data);
 
-            byte[] bInitVector = _initVector.ToByteArray();
-            byte[] bData = strdata.ToByteArray();
-            byte[] keyBytesLong;
-            byte[] keyBytes = new byte[16];
+            //encryption
+            string encrypted = _multipassbuilder.Encrypt(strdata, InitVector, _apikey, _sitekey);
 
+            //generate signature
+            string signature = _multipassbuilder.GenerateSignature(encrypted,_apikey);
 
-            using (SHA1CryptoServiceProvider sha = new SHA1CryptoServiceProvider())
-            {
-                keyBytesLong = sha.ComputeHash((_apikey + _sitekey).ToByteArray());
-            }
+            //encode and combine
+            multipass = _multipassbuilder.Encode(encrypted, signature);
 
-            Array.Copy(keyBytesLong, keyBytes, 16);
-
-            // XOR first 16 bytes of data
-            for (int i = 0; i < 16; i++)
-            {
-                bData[i] ^= bInitVector[i];
-            }
-
-
-            byte[] encrypted = encryption.AES_Encrypt(bData, keyBytes, bInitVector);
-
-            string encoded = Convert.ToBase64String(encrypted);
-
-            encoded = encoded.Replace("\n", "")     //remove \n
-                             .TrimEnd('=')          // remove leading and trailing =
-                             .Replace("+", "-")     // replace + with -
-                             .Replace("/", "_");    // replace / with _
-
-            //generate HMAC-SHA1 
-            HMACSHA1 hmacSha = new HMACSHA1(_apikey.ToByteArray());
-            hmacSha.Initialize();
-
-            byte[] hmac = hmacSha.ComputeHash(Encoding.UTF8.GetBytes(encoded));
-
-            signature = Convert.ToBase64String(hmac);
-
-            return encoded;
+            return multipass;
         }
     }
 }
