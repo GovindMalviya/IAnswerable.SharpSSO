@@ -13,8 +13,8 @@ namespace IAnswerable.SharpSSO.Multipass
         string _apikey;
         string _sitekey;
         string _initVector;
-        DataBuilder _databuilder = new DataBuilder();
-        Encryption encryption = new Encryption();
+
+        IDataBuilder _databuilder;
 
         public string ApiKey
         {
@@ -54,8 +54,7 @@ namespace IAnswerable.SharpSSO.Multipass
 
         public Receiver()
         {
-            
-
+            _databuilder = new DataBuilder();
         }
 
         public T GetData(string multipass, string signature)

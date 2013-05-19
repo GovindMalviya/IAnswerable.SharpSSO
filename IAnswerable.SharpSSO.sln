@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IAnswerable.SharpSSO", "IAn
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IAnswerable.SharpSSO.Test", "IAnswerable.SharpSSO.Test\IAnswerable.SharpSSO.Test.csproj", "{6C5AA023-D52E-482D-A76D-72079DE6A9D9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IAnswerable.SharpSSO.Website1", "IAnswerable.SharpSSO.Website1\IAnswerable.SharpSSO.Website1.csproj", "{2376942A-13A3-4A5D-8E1D-34B36CEC134E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +21,10 @@ Global
 		{6C5AA023-D52E-482D-A76D-72079DE6A9D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C5AA023-D52E-482D-A76D-72079DE6A9D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C5AA023-D52E-482D-A76D-72079DE6A9D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2376942A-13A3-4A5D-8E1D-34B36CEC134E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2376942A-13A3-4A5D-8E1D-34B36CEC134E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2376942A-13A3-4A5D-8E1D-34B36CEC134E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2376942A-13A3-4A5D-8E1D-34B36CEC134E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

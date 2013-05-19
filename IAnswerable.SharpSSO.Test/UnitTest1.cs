@@ -33,7 +33,7 @@ namespace IAnswerable.SharpSSO.Test
             _receiver.InitVector = "OpenSSL for Ruby";
             _receiver.SiteKey = "656566566h3rhr98rrh2r92rh2rn2rnr200";
 
-            var data = _receiver.GetData(multipass.MultipassText,multipass.Signature);
+            var data = _receiver.GetData(multipass.MultipassText, multipass.Signature);
 
             Assert.AreEqual(data, _data);
         }
@@ -41,9 +41,9 @@ namespace IAnswerable.SharpSSO.Test
 
     public class Data
     {
-        public string Name {get;set;}
-        public int  Id {get;set;}
-        public string Description {get;set;}
+        public string Name { get; set; }
+        public int Id { get; set; }
+        public string Description { get; set; }
 
         public override bool Equals(object obj)
         {
